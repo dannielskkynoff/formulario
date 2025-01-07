@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos para Entregadores</title>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js"></script>
+</head>
+<body>
+
+  <h2>Pedidos de Entrega</h2>
+  <ul id="deliveryList"></ul>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnoIVUjxoZKcnuDYf3WXURKL_grjJm9fU",
+      authDomain: "forms-a497d.firebaseapp.com",
+      projectId: "forms-a497d",
+      storageBucket: "forms-a497d.firebasestorage.app",
+      messagingSenderId: "409919251404",
+      appId: "1:409919251404:web:d24fdbfd538bb4b284f369"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Função para atualizar a lista de pedidos em tempo real
+    const deliveryListRef = database.ref("deliveries");
+    deliveryListRef.on("child_added", function(snapshot) {
+      const delivery = snapshot.val();
+      const listItem = document.createElement("li");
+
+      listItem.innerHTML = `
+        <strong>Cliente:</strong> ${delivery.clienteNome}<br>
+        <strong>Endereço:</strong> ${delivery.endereco}<br>
+        <strong>Status:</strong> ${delivery.status}<br>
+        <button onclick="acceptDelivery('${snapshot.key}')">Aceitar Entrega</button>
+        <hr>
+      `;
+      document.getElementById("deliveryList").appendChild(listItem);
+    });
+
+    // Função para o entregador aceitar a entrega
+    function acceptDelivery(deliveryId) {
+      const deliveryRef = database.ref("deliveries/" + deliveryId);
+      deliveryRef.update({
+        status: "Aceito"
+      });
+
+      alert("Entrega aceita!");
+    }
+  </script>
+
+</body>
+</html>
