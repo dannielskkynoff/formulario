@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Entrega</title>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js"></script>
+</head>
+<body>
+
+  <h2>Formulario de Entrega</h2>
+
+  <form id="deliveryForm">
+    <label for="clienteNome">Nome do Cliente:</label><br>
+    <input type="text" id="clienteNome" required><br><br>
+
+    <label for="endereco">Endereço de Entrega:</label><br>
+    <input type="text" id="endereco" required><br><br>
+
+    <button type="submit">Enviar Pedido</button>
+  </form>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnoIVUjxoZKcnuDYf3WXURKL_grjJm9fU",
+      authDomain: "forms-a497d.firebaseapp.com",
+      projectId: "forms-a497d",
+      storageBucket: "forms-a497d.firebasestorage.app",
+      messagingSenderId: "409919251404",
+      appId: "1:409919251404:web:4caa8d430fbc29e584f369"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    document.getElementById("deliveryForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const clienteNome = document.getElementById("clienteNome").value;
+      const endereco = document.getElementById("endereco").value;
+
+      const deliveryData = {
+        clienteNome: clienteNome,
+        endereco: endereco,
+        status: "Pendente"  // Status inicial
+      };
+
+      // Salva os dados no Firebase
+      const newDeliveryRef = database.ref("deliveries").push();
+      newDeliveryRef.set(deliveryData);
+
+      alert("Pedido enviado com sucesso!");
+      document.getElementById("deliveryForm").reset();
+    });
+  </script>
+
+</body>
+</html>
